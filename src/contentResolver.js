@@ -34,7 +34,7 @@ const checkAddIndex = (fullPath) => {
  * If no file exists, then load from the base client
  * @param  { string } type - folder to search for file i.e. components/assets
  *
- * @return { string } - path to file
+ * @return { Function } - a function that returns a string path to file
  */
 module.exports = (appConfig, aliasMap, content, type) => {
   // Ensure the required app data exists
@@ -43,11 +43,10 @@ module.exports = (appConfig, aliasMap, content, type) => {
   const nameSpace = get(appConfig, [ 'clientResolver', 'aliases', 'nameSpace' ], '')
   
   return match => {
-
     // Check if 'index' should be added to the file path
     // This allows loading the index.js of a folder
     const fullPath = checkAddIndex(
-      // Build the patth based on the client alias
+      // Build the path based on the client alias
       // Example: root_dir/clients/:client_name/:type/:file_name
       // - w/o extension
       path.join(aliasMap[ `${nameSpace}Client` ], type, match[1])

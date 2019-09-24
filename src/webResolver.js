@@ -3,10 +3,10 @@ const path = require('path')
 const { isFunc, isStr } = require('jsutils')
 const rootDir = require('app-root-path').path
 /**
- * Checks all passed in extentions with the file path
+ * Checks all passed in extensions with the file path
  * If a file is found with the path and extention, return it
  * @param {string} fullPath - Path to the file to load
- * @param {Array} [extensions=[]] - All allowed extentions
+ * @param {Array} [extensions=[]] - All allowed extensions
  *
  * @returns {string} - Found file path
  */
@@ -18,10 +18,10 @@ const findAliasPath = (fullPath, extensions = []) => {
       // If the path is already found, just return it
       if (foundPath) return foundPath
 
-      // Built the path with the extention
+      // Built the path with the extension
       const withExt = `${fullPath}${ext}`
 
-      // Check the extention exists and return it
+      // Check the extension exists and return it
       return fs.existsSync(withExt) && withExt || undefined
     }, undefined)
 
