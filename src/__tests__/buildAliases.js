@@ -1,5 +1,6 @@
 const appJson = require('./app.json')
 const { FS } = require('../../mocks')
+
 jest.setMock('fs', FS)
 
 const buildAliases = require('../buildAliases')
@@ -28,12 +29,13 @@ describe('Build Aliases', () => {
       client: true
     }
   })
+  
   it('should fail if appConfig is null', () => {
-    expect(() => buildAliases(null)).toThrow(Error)
+    expect(() => buildAliases(null, () => "", aliasMap, content)).toThrow(Error)
   })
 
   describe('the returned function', () => {
-    it('should use the base path for every alias if the client is undefined', () => {
+    it('should use the base path for every dynamic alias if the client is undefined', () => {
       content.client = null
       const finalAliasMap = buildAliases(appJson, null, aliasMap, content)();
       [baseKey, dynamicKey].forEach(key => {
@@ -41,14 +43,12 @@ describe('Build Aliases', () => {
       })
     })
 
-    it('should resolve the alias using the contentResolver if the client is defined', () => {
+    it('should resolve the dynamic alias paths using the contentResolver if the client is defined', () => {
       content.client =  true
-      const resolvedDir = "used/the/resolver"
-      const myResolver = (a, b, c, somePath) => (resolvedDir + somePath)
-      const finalAliasMap = buildAliases(appJson, myResolver, aliasMap, content)();
-      [baseKey, dynamicKey].forEach(key => {
-        expect(finalAliasMap[key]).toContain(resolvedDir)
-      })
+      const resolvedDir = "/used/the/resolver"
+      const testResolver = (a, b, c, somePath) => (resolvedDir + somePath)
+      const finalAliasMap = buildAliases(appJson, testResolver, aliasMap, content)();
+      expect(finalAliasMap[dynamicKey]).toContain(resolvedDir)
     })
   })
 })
