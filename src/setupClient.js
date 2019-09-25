@@ -51,11 +51,11 @@ const getClientPath = (appRoot, appConfig, clientName) => {
   const localClient = path.join(appRoot, localClients, clientName)
 
   // If external client exists, load that
-  return fs.existsSync(externalClient)
-    ? externalClient
+  return fs.existsSync(localClient)
+    ? localClient
     // Else check for local client
-    : fs.existsSync(localClient)
-      ? localClient
+    : fs.existsSync(externalClient)
+      ? externalClient
       : null
 }
 
