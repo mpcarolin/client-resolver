@@ -3,16 +3,16 @@ const path = require('path')
 const rootDir = path.join(__dirname)
 
 /**
- * Sets up zr-rn-clients folder in node_modules ( temporary )
+ * Sets up zr-rn-taps folder in node_modules ( temporary )
  */
-const setupRNClient = () => {
-  const rnClientFiles = [
-    path.join(rootDir, './node_modules/external-test-clients'),
-    path.join(rootDir, './node_modules/external-test-clients/clients'),
-    path.join(rootDir, './clients'),
+const setupRNTap = () => {
+  const rnTapFiles = [
+    path.join(rootDir, './node_modules/external-test-taps'),
+    path.join(rootDir, './node_modules/external-test-taps/taps'),
+    path.join(rootDir, './taps'),
   ]
-  rnClientFiles.map(file => !fs.existsSync(file) && fs.mkdirSync(file))
+  rnTapFiles.map(file => !fs.existsSync(file) && fs.mkdirSync(file))
 }
 
-// Ensure the external-test-clients folder exists
-setupRNClient()
+// Ensure the external-test-taps folder exists
+setupRNTap()

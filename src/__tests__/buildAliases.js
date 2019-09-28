@@ -7,8 +7,8 @@ const buildAliases = require('../buildAliases')
 
 describe('Build Aliases', () => {
   const aliasMap = { 
-    ...appJson.clientResolver.aliases,
-    TestClient: '/preceding/client/path'
+    ...appJson.tapResolver.aliases,
+    TestTap: '/preceding/tap/path'
   }
   const contentType = "components/assets"
   const baseKey = 'base_key'
@@ -26,7 +26,7 @@ describe('Build Aliases', () => {
       dynamic: {
         [dynamicKey]: '/my/overridable/path'
       },
-      client: true
+      tap: true
     }
   })
   
@@ -35,16 +35,16 @@ describe('Build Aliases', () => {
   })
 
   describe('the returned function', () => {
-    it('should use the base path for every dynamic alias if the client is undefined', () => {
-      content.client = null
+    it('should use the base path for every dynamic alias if the tap is undefined', () => {
+      content.tap = null
       const finalAliasMap = buildAliases(appJson, null, aliasMap, content)();
       [baseKey, dynamicKey].forEach(key => {
         expect(finalAliasMap[key]).toContain(content.basePath)
       })
     })
 
-    it('should resolve the dynamic alias paths using the contentResolver if the client is defined', () => {
-      content.client =  true
+    it('should resolve the dynamic alias paths using the contentResolver if the tap is defined', () => {
+      content.tap =  true
       const resolvedDir = "/used/the/resolver"
       const testResolver = (a, b, c, somePath) => (resolvedDir + somePath)
       const finalAliasMap = buildAliases(appJson, testResolver, aliasMap, content)();

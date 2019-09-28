@@ -7,17 +7,17 @@ const buildConstants = require('./buildConstants')
 const getAppConfig = require('./getAppConfig')
 const contentResolver = require('./contentResolver')
 
-setLogs(process.env.LOG, `log`, `[ Client Resolver ]`)
+setLogs(process.env.LOG, `log`, `[ Tap Resolver ]`)
 
 /**
- * Setups up the project to load the client
+ * Setups up the project to load the tap
  * @param {string} appRoot - Path to the root of the project
  * @param {Object} appConfig - app.json config file
  * @param {function} contentResolver - Function to help resolve file paths
  *
  * @return {Object} - Alias map to load files
  */
-module.exports = (appRoot, appConfig, contentResolver, clientName) => {
+module.exports = (appRoot, appConfig, contentResolver, tapName) => {
   appRoot = appRoot || APP_ROOT
   appConfig = appConfig || getAppConfig(appRoot)
   
@@ -29,7 +29,7 @@ module.exports = (appRoot, appConfig, contentResolver, clientName) => {
     DYNAMIC_CONTENT,
     EXTENSIONS,
     HAS_CLIENT
-  } = buildConstants(appRoot, appConfig, clientName)
+  } = buildConstants(appRoot, appConfig, tapName)
 
   const aliasesBuilder = buildAliases(
     appConfig,
@@ -39,7 +39,7 @@ module.exports = (appRoot, appConfig, contentResolver, clientName) => {
       base: BASE_CONTENT,
       basePath: BASE_PATH,
       dynamic: DYNAMIC_CONTENT,
-      client: HAS_CLIENT,
+      tap: HAS_CLIENT,
       extensions: EXTENSIONS
     }
   )

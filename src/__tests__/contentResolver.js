@@ -13,8 +13,8 @@ jest.mock('fs', () => ({
 
 describe('resolve content path', () => {
   const aliasMap = { 
-    ...appJson.clientResolver.aliases,
-    ['TestClient']: '/preceding/client/path'
+    ...appJson.tapResolver.aliases,
+    ['TestTap']: '/preceding/tap/path'
   }
   const contentType = "components/assets"
   const content = Object.freeze({
@@ -31,7 +31,7 @@ describe('resolve content path', () => {
     it('should return the full path to the resolved file', () => {
       const resolverFn = require('../contentResolver')(appJson, aliasMap, content, contentType)
       const mockMatchResults = ["my/cool/path/rocks.js", "/cool/path/rocks.js"]
-      const expectedPath = path.join(aliasMap['TestClient'], contentType, mockMatchResults[1])
+      const expectedPath = path.join(aliasMap['TestTap'], contentType, mockMatchResults[1])
       const fullPath = resolverFn(mockMatchResults)
       expect(fullPath).toBe(expectedPath)
     })
@@ -40,13 +40,13 @@ describe('resolve content path', () => {
       const dirPath = "/cool/directory" // mock of lstatSync().isDirectory returns true when directory is in the string
       const mockMatchResults = [null, dirPath]
       const resolverFn = require('../contentResolver')(appJson, aliasMap, content, contentType)
-      const expectedPath = path.join(aliasMap['TestClient'], contentType, mockMatchResults[1], "index")
+      const expectedPath = path.join(aliasMap['TestTap'], contentType, mockMatchResults[1], "index")
       const fullPath = resolverFn(mockMatchResults)
 
       expect(fullPath).toBe(expectedPath)
     })
 
-    it('should resolve a path that begins with the default basePath if the client file did not exist', () => {
+    it('should resolve a path that begins with the default basePath if the tap file did not exist', () => {
       const thePath = "/cool/use/base/path" // mock of existsSync returns false when use/base/path is in the string
       const mockMatchResults = [null, thePath]
       const resolverFn = require('../contentResolver')(appJson, aliasMap, content, contentType)

@@ -3,7 +3,7 @@ const appConfig = require('./app.json')
 jest.setMock('fs', FS)
 
 const basePath = './base'
-const clientPath = 'clients/test'
+const tapPath = 'taps/test'
 const buildAssets = require('../buildAssets')
 
 describe('Build Assets', () => {
@@ -14,20 +14,20 @@ describe('Build Assets', () => {
     }
   })
   
-  it('Should write the client assets to file with fs.writeFileSync', () => {
+  it('Should write the tap assets to file with fs.writeFileSync', () => {
 
-    const assetsPath = buildAssets(appConfig, basePath, clientPath)
+    const assetsPath = buildAssets(appConfig, basePath, tapPath)
     const savePath = FS.writeFileSync.mock.calls[0][0]
 
-    expect(FS.readdirSync).toHaveBeenCalledWith(`${clientPath}/assets`)
+    expect(FS.readdirSync).toHaveBeenCalledWith(`${tapPath}/assets`)
     expect(FS.writeFileSync).toHaveBeenCalled()
-    expect(savePath).toBe('clients/test/assets/index.js')
+    expect(savePath).toBe('taps/test/assets/index.js')
 
   })
 
   it('Should only include allowed extensions', () => {
 
-    const assetsPath = buildAssets(appConfig, basePath, clientPath)
+    const assetsPath = buildAssets(appConfig, basePath, tapPath)
     const saveContent = FS.writeFileSync.mock.calls[0][1]
 
     expect(saveContent.indexOf('duper.jpg')).not.toEqual(-1)
@@ -37,16 +37,16 @@ describe('Build Assets', () => {
 
   })
 
-  it('Should use the base assets path when no client assets path is set', () => {
+  it('Should use the base assets path when no tap assets path is set', () => {
     const confCopy = {
       ...appConfig,
-      clientResolver: {
-        ...appConfig.clientResolver,
-        paths: { ...appConfig.clientResolver.paths, clientAssets: undefined }
+      tapResolver: {
+        ...appConfig.tapResolver,
+        paths: { ...appConfig.tapResolver.paths, tapAssets: undefined }
       }
     }
     
-    const assetsPath = buildAssets(confCopy, basePath, clientPath)
+    const assetsPath = buildAssets(confCopy, basePath, tapPath)
     const savePath = FS.writeFileSync.mock.calls[2][0]
 
     expect(savePath).toBe('base/assets/index.js')

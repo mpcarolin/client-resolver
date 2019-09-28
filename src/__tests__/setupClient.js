@@ -4,17 +4,17 @@ const path = require('path')
 
 jest.setMock('fs', FS)
 
-// mocks out use in setupClientConfig~cleanupOldTempConfig
+// mocks out use in setupTapConfig~cleanupOldTempConfig
 jest.mock('rimraf', () => ({
   sync: () => true  
 }))
 
-const setupClient = require('../setupClient')
-const testClientName = "testClient"
-const clientConfig = require(`../../clients/${testClientName}/app.json`)
+const setupTap = require('../setupTap')
+const testTapName = "testTap"
+const tapConfig = require(`../../taps/${testTapName}/app.json`)
 
-describe('Setup Client', () => {
-  const testAppRoot = "../" // client-resolver root
+describe('Setup Tap', () => {
+  const testAppRoot = "../" // tap-resolver root
   beforeEach(() => {
     global.testMocks.fs = { 
       stat: true, 
@@ -26,50 +26,50 @@ describe('Setup Client', () => {
   })
   
   it('should fail if appRoot is null', () => {
-    expect(() => setupClient(null, {}, testClientName))
+    expect(() => setupTap(null, {}, testTapName))
       .toThrow(Error)
   })
 
   it('should fail if appConfig is null', () => {
-    expect(() => setupClient("", null, testClientName))
+    expect(() => setupTap("", null, testTapName))
       .toThrow(Error)
   })
 
   it('should return a valid base path', () => {
-    const { BASE_PATH } = setupClient(testAppRoot, appJson, testClientName)
+    const { BASE_PATH } = setupTap(testAppRoot, appJson, testTapName)
     const expectedPath = path.join(testAppRoot, 'base')
     expect(BASE_PATH).toBe(expectedPath)
   })
 
-  it('should provide the name of the client from all sources (argument, node env, or appJson)', () => {
-    const { CLIENT_NAME } = setupClient(testAppRoot, appJson, testClientName)
-    expect(CLIENT_NAME).toBe(testClientName)
+  it('should provide the name of the tap from all sources (argument, node env, or appJson)', () => {
+    const { CLIENT_NAME } = setupTap(testAppRoot, appJson, testTapName)
+    expect(CLIENT_NAME).toBe(testTapName)
 
-    const { CLIENT_NAME: nameFromConfig } = setupClient(testAppRoot, appJson, null)
+    const { CLIENT_NAME: nameFromConfig } = setupTap(testAppRoot, appJson, null)
     expect(nameFromConfig).toBe(appJson.name)
 
     const envName = "Fight Milk Inc."
     process.env.CLIENT = envName
-    const { CLIENT_NAME: nameFromNodeEnv } = setupClient(testAppRoot, appJson, null)
+    const { CLIENT_NAME: nameFromNodeEnv } = setupTap(testAppRoot, appJson, null)
     expect(nameFromNodeEnv).toBe(envName)
     delete process.env["CLIENT"]
   })
 
-  it('should indicate if a client folder exists or not', () => {
-    const { HAS_CLIENT } = setupClient(testAppRoot, appJson, null)
+  it('should indicate if a tap folder exists or not', () => {
+    const { HAS_CLIENT } = setupTap(testAppRoot, appJson, null)
     expect(HAS_CLIENT).toBe(false)
 
-    const { HAS_CLIENT: clientDefined } = setupClient(testAppRoot, appJson, testClientName)
-    expect(clientDefined).toBe(true)
+    const { HAS_CLIENT: tapDefined } = setupTap(testAppRoot, appJson, testTapName)
+    expect(tapDefined).toBe(true)
   })
 
-  it('should provide an app config object that is merged from the app configs of the client and the root app', () => {
-    const { APP_CONFIG, APP_CONFIG_PATH } = setupClient(testAppRoot, appJson, testClientName)
+  it('should provide an app config object that is merged from the app configs of the tap and the root app', () => {
+    const { APP_CONFIG, APP_CONFIG_PATH } = setupTap(testAppRoot, appJson, testTapName)
     
-    // verify the name was overwritten with the client's name
-    expect(APP_CONFIG.name).toEqual(testClientName)
+    // verify the name was overwritten with the tap's name
+    expect(APP_CONFIG.name).toEqual(testTapName)
 
-    // verify it uses the root appJson paths, since the test client app json didn't define those
-    expect(APP_CONFIG.clientResolver.paths).toEqual(appJson.clientResolver.paths)
+    // verify it uses the root appJson paths, since the test tap app json didn't define those
+    expect(APP_CONFIG.tapResolver.paths).toEqual(appJson.tapResolver.paths)
   })
 })

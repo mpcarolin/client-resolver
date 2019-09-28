@@ -3,12 +3,12 @@ const path = require('path')
 const allFiles = [
   './buildAliases',
   './buildAssets',
-  './buildClientList',
+  './buildTapList',
   './buildConstants',
   './getAppConfig',
   './contentResolver',
   './setup',
-  './setupClient',
+  './setupTap',
   './webResolver',
 ]
 

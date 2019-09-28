@@ -19,17 +19,17 @@ module.exports = appRoot => {
   if(!isObj(appConfig) || isEmpty(appConfig))
     throw new Error(`Could not find app.json in root directory!. app.json is required!`)
 
-  const paths = get(appConfig, [ 'clientResolver', 'paths' ])
+  const paths = get(appConfig, [ 'tapResolver', 'paths' ])
 
   if(!isObj(paths))
-    throw new Error(`App config does NOT define 'clientResolver.paths'. This path is required!`)
+    throw new Error(`App config does NOT define 'tapResolver.paths'. This path is required!`)
 
   Array
-    .from([ 'externalClients', 'localClients', 'baseClient' ])
+    .from([ 'externalTaps', 'localTaps', 'baseTap' ])
     .map(path => {
       if(!isStr(paths[path]))
         throw new Error(
-          `Your app config 'clientResolver.paths' must contain a ${path} key as a string!`
+          `Your app config 'tapResolver.paths' must contain a ${path} key as a string!`
         )
     })
 
