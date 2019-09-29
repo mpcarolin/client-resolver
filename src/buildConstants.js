@@ -126,8 +126,8 @@ module.exports = (appRoot, appConfig, tapName) => {
     APP_CONFIG,
     APP_CONFIG_PATH,
     BASE_PATH,
-    CLIENT_NAME,
-    CLIENT_PATH,
+    TAP_NAME,
+    TAP_PATH,
     HAS_TAP,
   } = setupTap(appRoot, appConfig, tapName)
 
@@ -135,7 +135,7 @@ module.exports = (appRoot, appConfig, tapName) => {
   const ASSETS_PATH = buildAssets(
     APP_CONFIG,
     BASE_PATH,
-    CLIENT_PATH,
+    TAP_PATH,
     get(APP_CONFIG, [ 'tapResolver', 'extensions', 'assets' ], [])
   )
 
@@ -143,7 +143,7 @@ module.exports = (appRoot, appConfig, tapName) => {
   const aliasPaths = {
     assets: ASSETS_PATH,
     base: BASE_PATH,
-    tap: CLIENT_PATH,
+    tap: TAP_PATH,
     config: APP_CONFIG_PATH
   }
 
@@ -153,8 +153,8 @@ module.exports = (appRoot, appConfig, tapName) => {
     APP_CONFIG_PATH,
     BASE_PATH,
     ASSETS_PATH,
-    CLIENT_NAME,
-    CLIENT_PATH,
+    TAP_NAME,
+    TAP_PATH,
     HAS_TAP,
     ALIASES: buildAliases(appRoot, APP_CONFIG, aliasPaths),
     BASE_CONTENT: buildBaseContent(APP_CONFIG),

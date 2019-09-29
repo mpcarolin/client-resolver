@@ -42,17 +42,17 @@ describe('Setup Tap', () => {
   })
 
   it('should provide the name of the tap from all sources (argument, node env, or appJson)', () => {
-    const { CLIENT_NAME } = setupTap(testAppRoot, appJson, testTapName)
-    expect(CLIENT_NAME).toBe(testTapName)
+    const { TAP_NAME } = setupTap(testAppRoot, appJson, testTapName)
+    expect(TAP_NAME).toBe(testTapName)
 
-    const { CLIENT_NAME: nameFromConfig } = setupTap(testAppRoot, appJson, null)
+    const { TAP_NAME: nameFromConfig } = setupTap(testAppRoot, appJson, null)
     expect(nameFromConfig).toBe(appJson.name)
 
     const envName = "Fight Milk Inc."
-    process.env.CLIENT = envName
-    const { CLIENT_NAME: nameFromNodeEnv } = setupTap(testAppRoot, appJson, null)
+    process.env.TAP = envName
+    const { TAP_NAME: nameFromNodeEnv } = setupTap(testAppRoot, appJson, null)
     expect(nameFromNodeEnv).toBe(envName)
-    delete process.env["CLIENT"]
+    delete process.env["TAP"]
   })
 
   it('should indicate if a tap folder exists or not', () => {

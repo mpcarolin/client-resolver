@@ -30,12 +30,12 @@ const assetFileNames = (tapAssetPath, extensions=[]) => {
 /**
  * Generates a tap image cache file, which allows loading tap specific images
  * @param {*} BASE_PATH - base directory of the app components
- * @param {*} CLIENT_NAME - name of the tap folder where the assets exist
- * @param {*} CLIENT_PATH - path to the taps folder
+ * @param {*} TAP_NAME - name of the tap folder where the assets exist
+ * @param {*} TAP_PATH - path to the taps folder
  *
  * @returns {Object} - path to taps assets
  */
-module.exports = (appConf, BASE_PATH, CLIENT_PATH, extensions) => {
+module.exports = (appConf, BASE_PATH, TAP_PATH, extensions) => {
 
   // Get the tap assets defined path from the app config
   const tapAssets = get(appConf, [ 'tapResolver', 'paths', 'tapAssets' ])
@@ -43,7 +43,7 @@ module.exports = (appConf, BASE_PATH, CLIENT_PATH, extensions) => {
   // Check the tap assets, if none, use the base assets
   const tapAssetPath = !tapAssets || !isStr(tapAssets)
     ? path.join(BASE_PATH, 'assets')
-    : path.join(CLIENT_PATH, tapAssets)
+    : path.join(TAP_PATH, tapAssets)
 
   // Gets all the images assets in the taps assets folder
   let properties = assetFileNames(tapAssetPath, extensions)
