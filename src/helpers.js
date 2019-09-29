@@ -112,10 +112,14 @@ const requireFile = (folder, file, logError) => {
  */
 const validateApp = (appRoot, appConfig) => {
   if(!appRoot || !isStr(appRoot))
-    throw new Error(`App root directory path ( String ) is required as the first argument!`)
+    throw new Error(
+      `App root path is required as a valid string primitive. Instead ${appRoot} was received!`
+    )
 
   if(!appConfig || !isObj(appConfig))
-    throw new Error(`App config ( Object ) is required as the second argument!`)
+    throw new Error(
+      `App config is required as a valid object primitive. Instead ${appConfig} was received!`
+    )
 }
 
 module.exports = {

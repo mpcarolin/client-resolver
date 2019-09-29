@@ -1,4 +1,5 @@
 const path = require('path')
+const { isFunc } = require('jsutils')
 const { validateApp } = require('./helpers')
 
 /**
@@ -14,12 +15,16 @@ const { validateApp } = require('./helpers')
  * @return {Object} - Alias map to load files
  */
 const buildDynamicAliases = (appConfig, contentResolver, aliasMap, content) => {
+  
+  // Ensure there a tap exists and the contentResolver is a function
+  const useResolver = content.tap && isFunc(contentResolver)
+  
   // Add dynamic content
   return Object.keys(content.dynamic)
     .reduce((updatedMap, key, value) => {
       // If we have a tap, use the contentResolver method to resolve the path
       // Otherwise set the path to the basePath
-      updatedMap[key] = content.tap
+      updatedMap[key] = useResolver
         ? contentResolver(appConfig, updatedMap, content, content.dynamic[key])
         : path.join(content.basePath, content.dynamic[key])
 
