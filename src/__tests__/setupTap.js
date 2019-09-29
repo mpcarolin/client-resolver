@@ -3,26 +3,24 @@ const { get } = require('jsutils')
 const { FS } = require('../../mocks')
 const appConfig = Object.freeze(require('./app.json'))
 
+// Helpers to allow calling the setup function in a test env
+const testTapName = "test"
+const testAppRoot = "../" // tap-resolver root
+const tapConfig = require(`../../taps/${testTapName}/app.json`)
+
+// Mock the called functions for testing
 // Overwrite the lstat so we can get access to the path it's checking for
 let validPathMatch = false
 const isDirMock = (checkPath) => {
-  return jest.fn(() => {
-    return validPathMatch && validPathMatch === checkPath
-  })
+  return jest.fn(() => { return validPathMatch && validPathMatch === checkPath })
 }
-
-FS.lstatSync = jest.fn(checkPath => {
-  return { isDirectory: isDirMock(checkPath) }
-})
+FS.lstatSync = jest.fn(checkPath => { return { isDirectory: isDirMock(checkPath) } })
 
 // mocks out use in setupTapConfig~cleanupOldTempConfig
 jest.mock('rimraf', () => ({ sync: () => true  }))
 jest.setMock('fs', FS)
 
-const testTapName = "test"
-const testAppRoot = "../" // tap-resolver root
-const tapConfig = require(`../../taps/${testTapName}/app.json`)
-
+// Module to test
 const setupTap = require('../setupTap')
 
 describe('Setup Tap', () => {
