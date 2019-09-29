@@ -3,6 +3,7 @@
   "displayName": "Tap Resolver",
   "tapResolver": {
     "paths": {
+      "temp": "./temp",
       "baseTap": "",
       "tapAssets": "",
       "tapList": "",

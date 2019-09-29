@@ -69,10 +69,10 @@ const addNameSpace = (appConfig, addTo) => {
  * @returns {Object} - all dynamically mapped paths
  */
 const buildDynamicContent = (appConfig={}) => {
-
+  // Build the dynamic alias paths
   return freezeObj(
     addNameSpace(appConfig, {
-      ...get(appConfig, [ 'tapResolver', 'aliases', 'dynamic'], {})
+      ...get(appConfig, [ 'tapResolver', 'aliases', 'dynamic'], {}),
     })
   )
 }
@@ -132,12 +132,7 @@ module.exports = (appRoot, appConfig, tapName) => {
   } = setupTap(appRoot, appConfig, tapName)
 
   // Build the assets for the tap
-  const ASSETS_PATH = buildAssets(
-    APP_CONFIG,
-    BASE_PATH,
-    TAP_PATH,
-    get(APP_CONFIG, [ 'tapResolver', 'extensions', 'assets' ], [])
-  )
+  const ASSETS_PATH = buildAssets(APP_CONFIG, BASE_PATH, TAP_PATH)
 
   // Build the aliasPaths object from the built tap data
   const aliasPaths = {

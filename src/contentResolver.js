@@ -47,7 +47,7 @@ module.exports = (appConfig, aliasMap, content, type) => {
     // Check if 'index' should be added to the file path
     // This allows loading the index.js of a folder
     const fullPath = checkAddIndex(
-      // Build the patth based on the tap alias
+      // Build the path based on the tap alias
       // Example: root_dir/taps/:tap_name/:type/:file_name
       // - w/o extension
       path.join(aliasMap[ `${nameSpace}Tap` ], type, match[1])

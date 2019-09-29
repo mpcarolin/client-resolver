@@ -3,7 +3,7 @@ const fs = require('fs')
 const rimraf = require('rimraf')
 const { deepMerge, logData, setLogs, isStr, isObj, get } = require('jsutils')
 const getAppConfig = require('./getAppConfig')
-const { validateApp, ensureDirSync } = require('./helpers')
+const { validateApp, ensureDirSync, isDirectory } = require('./helpers')
 const tapConstants = require('./tapConstants')
 const { configNames, configKeys }  = tapConstants
 
@@ -19,10 +19,22 @@ ensureDirSync(TEMP_DEF_FOLDER)
  * @returns {string} - path to the base tap
  */
 const getBaseTapPath = (appRoot, appConfig) => {
+
+  // Get the base tap path
   const { baseTap } = get(appConfig, [ 'tapResolver', 'paths' ], {})
-  return baseTap
-    ? path.join(appRoot, baseTap)
-    : path.join(appRoot, `/taps/`, appConfig.name)
+  
+  // Helper method to check for a directory
+  const checkBaseTap = check => isDirectory(check, true) && check
+  
+  // Check for the base tap from the app config
+  return checkBaseTap(path.join(appRoot, baseTap)) ||
+    // Check for a taps folder with the app config name
+    checkBaseTap(path.join(appRoot, '/taps', appConfig.name)) ||
+    // Check for a folder with the app config name
+    checkBaseTap(path.join(appRoot, appConfig.name)) ||
+    // If none of the above, just return the root
+    appRoot
+
 }
 
 /**

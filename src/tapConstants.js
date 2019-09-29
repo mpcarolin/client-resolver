@@ -34,6 +34,12 @@ module.exports = deepFreeze({
     './setupTap',
     './webResolver',
   ],
+  
+  /**
+  * Default assets path, relative to the base path of the app config
+  */
+  assetsPath: 'assets',
+  
   /**
   * Files and asset extensions that can be resolved
   */
