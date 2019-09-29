@@ -38,6 +38,7 @@ const assetFileNames = (tapAssetPath, extensions=[]) => {
  */
 const getAssetsPath = (appConf, BASE_PATH, TAP_PATH) => {
   const { assetsPath } = tapConstants
+
   // Build the default assets path, and ensure it exists
   const defAssetsPath = path.join(BASE_PATH, assetsPath)
   ensureDirSync(defAssetsPath)
@@ -47,7 +48,7 @@ const getAssetsPath = (appConf, BASE_PATH, TAP_PATH) => {
 
   // Build the path relative to the tap
   const checkTapAssetPath = isStr(tapAssets) && path.join(TAP_PATH, tapAssets)
-  
+
   // Check that the path exists, and is a directory
   return checkTapAssetPath && isDirectory(checkTapAssetPath, true)
     ? { full: checkTapAssetPath, relative: tapAssets }

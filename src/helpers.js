@@ -10,8 +10,7 @@ const { get, isObj, isStr, keyMap, deepFreeze } = require('jsutils')
  */
 const isDirectory = (check, skipThrow) => {
   try {
-    fs.lstatSync(check).isDirectory()
-    return true
+    return fs.lstatSync(check).isDirectory()
   }
   catch(e){
     if(skipThrow) return false
