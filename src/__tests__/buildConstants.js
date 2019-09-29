@@ -2,7 +2,7 @@ const { FS } = require('../../mocks')
 
 jest.setMock('fs', FS)
 
-const testTapName = "testTap"
+const testTapName = "test"
 const testAppRoot = ""
 const buildConstants = require('../buildConstants')
 

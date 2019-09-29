@@ -35,7 +35,7 @@ describe('Build Aliases', () => {
     content = buildContentObj()
   })
   
-  describe('Build Aliases params (appConfig)', () => {
+  describe('param - appConfig', () => {
 
     it('should throw an error if first param (appConfig) is not an object', () => {
       expect(() => buildAliases(null, () => "", aliasMap, content)).toThrow(Error)
@@ -43,6 +43,14 @@ describe('Build Aliases', () => {
     
     it('should NOT throw an error if first param (appConfig) is an object', () => {
       expect(() => buildAliases({}, () => "", aliasMap, content)).not.toThrow(Error)
+    })
+
+  })
+
+  describe('calling the function', () => {
+
+    it('should return a function when valid params are passed in', () => {
+      expect(typeof buildAliases({}, () => "", aliasMap, content)).toBe('function')
     })
 
   })
