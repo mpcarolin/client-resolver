@@ -1,13 +1,17 @@
 const path = require('path')
 const { FS } = require('../../mocks')
 const appConfig = require('./app.json')
-jest.setMock('fs', FS)
 
+// Helpers to allow calling the setup function in a test env
 let isDirectory = false
 const isDirMock = jest.fn(() => isDirectory)
 const basePath = path.join(__dirname, '../../', './base')
 const tapPath = path.join(__dirname, '../../', './taps/test')
 
+// Mock the called functions for testing
+jest.setMock('fs', FS)
+
+// Module to test
 const buildAssets = require('../buildAssets')
 
 describe('Build Assets', () => {
@@ -73,6 +77,5 @@ describe('Build Assets', () => {
 
     expect(assetsPath).toEqual('assets')
   })
-
 
 })

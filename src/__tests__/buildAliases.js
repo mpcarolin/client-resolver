@@ -1,8 +1,7 @@
 const appJson = require('./app.json')
 const { FS } = require('../../mocks')
 
-jest.setMock('fs', FS)
-
+// Helpers to allow calling the setup function in a test env
 const aliasMap = {
   ...appJson.tapResolver.aliases,
   TestTap: '/preceding/tap/path'
@@ -26,6 +25,10 @@ const buildContentObj = () => {
   }
 }
 
+// Mock the called functions for testing
+jest.setMock('fs', FS)
+
+// Module to test
 const buildAliases = require('../buildAliases')
 
 describe('Build Aliases', () => {
