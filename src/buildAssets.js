@@ -1,14 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const { get, isStr } = require('jsutils')
-
-const assetExtensions = [
-  '.png',
-  '.jpg',
-  '.jpeg',
-  '.gif',
-  '.ttf',
-]
+const tapConstants = require('./tapConstants')
 
 /**
  * Gets all the asset files names from the passed in tapAssetPath
@@ -20,7 +13,7 @@ const assetExtensions = [
 const assetFileNames = (tapAssetPath, extensions=[]) => {
 
   // Get all allowed extensions
-  const allExtensions = assetExtensions.concat(extensions)
+  const allExtensions = get(tapConstants, [ 'extensions', 'assets' ], []).concat(extensions)
 
   // Create an Array from the assets found at the tapAssetPath
   return Array.from(

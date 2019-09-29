@@ -82,10 +82,7 @@ const babelSetup = () => {
       extensions: EXTENSIONS,
       // Aliases work differently in webpack, so add the webResolver method helper for alias mapping
       resolvePath: isWeb && webResolver || undefined,
-      alias: {
-        ...buildAliases(),
-        ...aliases,
-      }
+      alias: buildAliases()
   }])
 
   return {

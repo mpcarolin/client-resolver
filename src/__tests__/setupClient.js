@@ -56,10 +56,10 @@ describe('Setup Tap', () => {
   })
 
   it('should indicate if a tap folder exists or not', () => {
-    const { HAS_CLIENT } = setupTap(testAppRoot, appJson, null)
-    expect(HAS_CLIENT).toBe(false)
+    const { HAS_TAP } = setupTap(testAppRoot, appJson, null)
+    expect(HAS_TAP).toBe(false)
 
-    const { HAS_CLIENT: tapDefined } = setupTap(testAppRoot, appJson, testTapName)
+    const { HAS_TAP: tapDefined } = setupTap(testAppRoot, appJson, testTapName)
     expect(tapDefined).toBe(true)
   })
 

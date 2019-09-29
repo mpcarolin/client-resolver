@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { get, isObj, isStr } = require('jsutils')
+const { get, isObj, isStr, keyMap, deepFreeze } = require('jsutils')
 
 /**
  * Checks is a path is a directory
@@ -58,6 +58,25 @@ const pathExistsSync = check => {
 }
 
 
+/**
+ * Ensures a directory exists
+ * @param {string} dirPath - path to ensure
+ *
+ * @return {string} - directory path that was ensured
+ */
+const ensureDirSync = dirPath => {
+  try {
+    // make the directory if it doesn't exist
+    !fs.existsSync(dirPath) && fs.mkdirSync(dirPath)
+
+    return dirPath
+  }
+  catch(err) {
+    return false
+  }
+}
+
+
 
 /**
  * Wraps require in a try catch to app doesn't throw when require is called inline
@@ -69,10 +88,15 @@ const pathExistsSync = check => {
  */
 const requireFile = (folder, file, logError) => {
   try {
-    return require(path.join(folder, file))
+    // Build the path to the file
+    const location = path.join(folder, file)
+    // load the data
+    const data = require(location)
+
+    return { data, location }
   }
   catch(e){
-    if(!logError) return
+    if(!logError) return {}
     logData(`Could not require file from path => ${path.join(folder, file)}`, `error`)
     logData(e.message, `error`)
     logData(e.stack, `error`)
@@ -95,6 +119,7 @@ const validateApp = (appRoot, appConfig) => {
 }
 
 module.exports = {
+  ensureDirSync,
   isDirectory,
   pathExists,
   pathExistsSync,

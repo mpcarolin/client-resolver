@@ -2,9 +2,15 @@ const path = require('path')
 const fs = require('fs')
 const rimraf = require('rimraf')
 const { deepMerge, logData, setLogs, isStr, isObj, get } = require('jsutils')
-const { validateApp } = require('./helpers')
+const getAppConfig = require('./getAppConfig')
+const { validateApp, ensureDirSync } = require('./helpers')
+const tapConstants = require('./tapConstants')
+const { configNames, configKeys }  = tapConstants
 
-const APP_CONFIG_NAME = 'app.json'
+// Default location to store files
+const TEMP_DEF_FOLDER = path.join(__dirname, '..', './temp')
+ensureDirSync(TEMP_DEF_FOLDER)
+
 /**
  * Gets the path to the app.json tap folder
  * @param {string} appRoot - Root directory of the mobile keg
@@ -76,6 +82,27 @@ const cleanupOldTempConfig = TEMP_FOLDER_PATH => {
   }
 }
 
+
+/**
+ * Finds the path where temp config files should be stored
+ * If the temp path is defined in appConfig
+ * It's resolved relative to the specific clients folder
+ * @param {Object} appConfig - default app.json config
+ * @param {*} CLIENT_PATH - path to the clients folder
+ *
+ * @returns {string} - path to the temp folder
+ */
+const getTempFolderPath = (appConfig, CLIENT_PATH) => {
+  // Check the app config for a temp folder path
+  const configTemp = get(appConfig, [ 'tapResolver', 'paths', 'temp' ])
+  
+  // If the path exists join it with the client path and return it
+  // Otherwise return the default
+  return configTemp
+    ? path.join(CLIENT_PATH, configTemp)
+    : TEMP_DEF_FOLDER
+}
+
 /**
  * Joins the app config root with the taps config
  * <br> Writes the joined config to disk inside a temp folder
@@ -86,25 +113,30 @@ const cleanupOldTempConfig = TEMP_FOLDER_PATH => {
  * @returns {Object} - Merged app config, and it's path
  */
 const buildJoinedConfigs = (appConfig, CLIENT_PATH, TEMP_FOLDER_PATH) => {
+  
+  // Get the clientConfig, but we don't care if it's not valid
+  const clientConfig = getAppConfig(CLIENT_PATH, false, false) || {}
+
   // Join the root config with the tap config
-  const joinedConfig = deepMerge(
-    appConfig,
-    require(path.join(CLIENT_PATH, APP_CONFIG_NAME))
-  )
+  const joinedConfig = deepMerge(appConfig, clientConfig)
 
   // Rebuild the temp folder path
   fs.mkdirSync(TEMP_FOLDER_PATH)
 
-  // Build the temp config path
-  const TEMP_CONFIG_PATH = path.join(TEMP_FOLDER_PATH, APP_CONFIG_NAME)
+  // Build the temp config path with the temp folder path and the name of the config file
+  const TEMP_CONFIG_PATH = path.join(
+    TEMP_FOLDER_PATH,
+    joinedConfig[configKeys.TAP_RESOLVER_FILE]
+  )
 
   // Write the temp config file
   fs.writeFileSync(
-    path.join(TEMP_FOLDER_PATH, APP_CONFIG_NAME),
-    JSON.stringify(joinedConfig),
+    TEMP_CONFIG_PATH,
+    JSON.stringify(joinedConfig, null, 2),
     'utf8'
   )
 
+  // Return the joined config, and the path to the temp config file
   return { APP_CONFIG: joinedConfig, APP_CONFIG_PATH: TEMP_CONFIG_PATH }
 }
 
@@ -114,21 +146,22 @@ const buildJoinedConfigs = (appConfig, CLIENT_PATH, TEMP_FOLDER_PATH) => {
  * @param {string} appRoot - Root directory of the mobile keg
  * @param {Object} appConfig - default app.json config
  * @param {string} CLIENT_PATH - path to the tap folder
- * @param {boolean} HAS_CLIENT - if an active tap is set
+ * @param {boolean} HAS_TAP - if an active tap is set
  *
  * @returns {Object} - Merged app config, and it's path
  */
-const setupTapConfig = (appRoot, appConfig, CLIENT_PATH, HAS_CLIENT) => {
-  const APP_CONFIG_PATH = path.join(appRoot, APP_CONFIG_NAME)
+const setupTapConfig = (appRoot, appConfig, CLIENT_PATH, HAS_TAP) => {
 
   // Data to load tap from
-  let tapData = { APP_CONFIG: appConfig, APP_CONFIG_PATH: APP_CONFIG_PATH }
+  let tapData = { APP_CONFIG: appConfig, APP_CONFIG_PATH: configKeys.TAP_RESOLVER_LOC }
 
   // If no tap just return the default tapData
-  if(!HAS_CLIENT) return tapData
+  if(!HAS_TAP) return tapData
 
-  // build the temp folder path
-  const TEMP_FOLDER_PATH = path.join(CLIENT_PATH, 'temp')
+  // Get the location where temp tap configs should be stored
+  const TEMP_FOLDER_PATH = getTempFolderPath(appConfig, CLIENT_PATH)
+
+  // Clean up any past client configs
   cleanupOldTempConfig(TEMP_FOLDER_PATH)
 
   try {
@@ -163,10 +196,10 @@ module.exports = (appRoot, appConfig, tapName) => {
   const CLIENT_NAME = getActiveTapName(appConfig, tapName)
 
   // Flag set if the active tap is different from the default root tap
-  const HAS_CLIENT = Boolean(CLIENT_NAME !== appConfig.name)
+  const HAS_TAP = Boolean(CLIENT_NAME !== appConfig.name)
 
   // Set the tap path if an active tap is set
-  const CLIENT_PATH = HAS_CLIENT
+  const CLIENT_PATH = HAS_TAP
     ? getTapPath(appRoot, appConfig, CLIENT_NAME)
     : BASE_PATH
 
@@ -175,10 +208,10 @@ module.exports = (appRoot, appConfig, tapName) => {
     appRoot,
     appConfig,
     CLIENT_PATH,
-    HAS_CLIENT
+    HAS_TAP
   )
 
-  !HAS_CLIENT && logData(
+  !HAS_TAP && logData(
     `No tap folder found at ${CLIENT_PATH}, using defaults at ${BASE_PATH}`,
     'warn'
   )
@@ -189,6 +222,6 @@ module.exports = (appRoot, appConfig, tapName) => {
     BASE_PATH,
     CLIENT_NAME,
     CLIENT_PATH,
-    HAS_CLIENT
+    HAS_TAP
   }
 }

@@ -4,6 +4,7 @@ const { deepMerge, cloneArr, get, isObj, reduceObj, logData } = require('jsutils
 const buildAssets = require('./buildAssets')
 const setupTap = require('./setupTap')
 const { validateApp } = require('./helpers')
+const tapConstants = require('./tapConstants')
 
 const freezeObj = Object.freeze
 
@@ -35,17 +36,10 @@ const addNameSpace = (appConfig, addTo) => {
  const buildExtensions = (appConfig={}) => {
   return freezeObj(
     cloneArr(
-      get(appConfig, [ 'tapResolver', 'extensions'],
-      // Set default extentions, if nothing is set in the appConfig
-      [
-        '.ios.js',
-        '.android.js',
-        'web.js',
-        '.js',
-        '.json',
-        '.sqlite',
-        '.ttf',
-      ]
+      // Try to pull the extensions from the config
+      get(appConfig, [ 'tapResolver', 'extensions', 'resolve' ],
+      // Otherwise set the default extensions
+      get(tapConstants, [ 'extensions', 'resolve' ], [])
     ))
   )
  }
@@ -129,37 +123,43 @@ module.exports = (appRoot, appConfig, tapName) => {
 
   // Setup the tap, to get the correct path data
   const {
+    APP_CONFIG,
     APP_CONFIG_PATH,
     BASE_PATH,
     CLIENT_NAME,
     CLIENT_PATH,
-    HAS_CLIENT,
+    HAS_TAP,
   } = setupTap(appRoot, appConfig, tapName)
 
   // Build the assets for the tap
-  const ASSETS_PATH = buildAssets(appConfig, BASE_PATH, CLIENT_NAME, CLIENT_PATH)
+  const ASSETS_PATH = buildAssets(
+    APP_CONFIG,
+    BASE_PATH,
+    CLIENT_PATH,
+    get(APP_CONFIG, [ 'tapResolver', 'extensions', 'assets' ], [])
+  )
 
   // Build the aliasPaths object from the built tap data
   const aliasPaths = {
     assets: ASSETS_PATH,
     base: BASE_PATH,
     tap: CLIENT_PATH,
-    config: APP_CONFIG_PATH,
-    core: path.join(appRoot, './core')
+    config: APP_CONFIG_PATH
   }
 
   // Return the constants set from the tap data
   return freezeObj({
+    APP_CONFIG,
     APP_CONFIG_PATH,
     BASE_PATH,
     ASSETS_PATH,
     CLIENT_NAME,
     CLIENT_PATH,
-    HAS_CLIENT,
-    ALIASES: buildAliases(appRoot, appConfig, aliasPaths),
-    BASE_CONTENT: buildBaseContent(appConfig),
-    DYNAMIC_CONTENT: buildDynamicContent(appConfig),
-    EXTENSIONS: buildExtensions(appConfig),
+    HAS_TAP,
+    ALIASES: buildAliases(appRoot, APP_CONFIG, aliasPaths),
+    BASE_CONTENT: buildBaseContent(APP_CONFIG),
+    DYNAMIC_CONTENT: buildDynamicContent(APP_CONFIG),
+    EXTENSIONS: buildExtensions(APP_CONFIG),
   })
   
 }

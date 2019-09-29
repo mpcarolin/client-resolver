@@ -23,23 +23,24 @@ module.exports = (appRoot, appConfig, contentResolver, tapName) => {
   
   const {
     ALIASES,
+    APP_CONFIG,
     APP_CONFIG_PATH,
     BASE_CONTENT,
     BASE_PATH,
     DYNAMIC_CONTENT,
     EXTENSIONS,
-    HAS_CLIENT
+    HAS_TAP
   } = buildConstants(appRoot, appConfig, tapName)
 
   const aliasesBuilder = buildAliases(
-    appConfig,
+    APP_CONFIG,
     contentResolver,
     { ...ALIASES },
     {
       base: BASE_CONTENT,
       basePath: BASE_PATH,
       dynamic: DYNAMIC_CONTENT,
-      tap: HAS_CLIENT,
+      tap: HAS_TAP,
       extensions: EXTENSIONS
     }
   )
