@@ -1,5 +1,5 @@
 {
-  "name": "tap-resolver",
+  "name": "@simpleviewinc/tap-resolver",
   "version": "1.0.0",
   "description": "Resolves tap files within the SV-Keg",
   "main": "babel.config.js",
@@ -8,6 +8,13 @@
   "scripts": {
     "clean": "rimraf yarn.lock; rimraf package.lock; rimraf node_modules ",
     "test": "NODE_ENV=resolver-test jest"
+  },
+  "publishConfig": { 
+    "registry": "https://npm.pkg.github.com/" 
+  },
+  "repository" : {
+    "url": "ssh://git@github.com/simpleviewinc/tap-resolver.git",
+    "type": "git"
   },
   "dependencies": {
     "@babel/cli": "^7.5.5",
