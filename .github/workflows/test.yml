@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      GIT_KEY: ${{ secrets.GITHUB_TOKEN }}}
+      GIT_KEY: ${{ secrets.GITHUB_TOKEN }}
     
     strategy:
       matrix:
